@@ -21,11 +21,10 @@ def create_blank_ico(path):
 create_blank_ico(icon_path)
 
 # Set the OpenAI API key
-os.environ["OPENAI_API_KEY"] = "Insert API Key Here"
+os.environ["OPENAI_API_KEY"] = "API Key Here"
 
 # Initialize the OpenAI model
 llm = ChatOpenAI(model_name="gpt-4o-mini")
-
 
 # Predefined email scenarios with added "Chase Up Response"
 email_scenarios = {
@@ -37,6 +36,15 @@ email_scenarios = {
     "Earlier Delivery": "Request an earlier delivery date from {supplier_name} for the urgent requirement of {product_description}. Explain the urgency and request for a sooner delivery date.",
     "Chase Up Response": "Write a polite follow-up email to {supplier_name} to chase up their response regarding the earlier communication about {product_description}. Kindly ask for a status update."
 }
+
+# Define the Casual Human prompt
+CASUAL_HUMAN_PROMPT = (
+    "Use a human voice with a friendly tone that isn’t colloquial. "
+    "Use short sentences and simple words. Remove academic language, transition phrases, and corporate jargon. "
+    "Additionally, check for common AI writing patterns such as repeated sentence structures, overused transitions, "
+    "unnecessary clarifications, and academic phrasing. Rework these elements to sound more natural and human-like. "
+    "Keep the key points but strip away any unnecessary words."
+)
 
 # Create a prompt template with placeholders
 prompt_template = PromptTemplate(
@@ -60,6 +68,13 @@ def get_response_and_display():
     # If additional prompt is blank, set it to an empty string to avoid issues
     if not user_prompt:
         user_prompt = ""
+    
+    # Append Casual Human prompt if selected
+    if selected_tone == "Casual Human":
+        if user_prompt:
+            user_prompt += "\n" + CASUAL_HUMAN_PROMPT
+        else:
+            user_prompt = CASUAL_HUMAN_PROMPT
 
     if selected_scenario:  # Only check for the scenario, not additional prompt
         status_label.config(text="Fetching response...")
@@ -146,7 +161,7 @@ root.iconbitmap(icon_path)
 scenario_label = tk.Label(root, text="Select Email Type:")
 scenario_label.pack(pady=5)
 email_type = tk.StringVar(root)
-email_dropdown = ttk.Combobox(root, textvariable=email_type)
+email_dropdown = ttk.Combobox(root, textvariable=email_type, state="readonly")
 email_dropdown['values'] = list(email_scenarios.keys())
 email_dropdown.pack(pady=5)
 
@@ -154,8 +169,8 @@ email_dropdown.pack(pady=5)
 tone_label = tk.Label(root, text="Select Email Tone:")
 tone_label.pack(pady=5)
 email_tone = tk.StringVar(root)
-tone_dropdown = ttk.Combobox(root, textvariable=email_tone)
-tone_dropdown['values'] = ["Formal", "Semi-Formal", "Casual"]
+tone_dropdown = ttk.Combobox(root, textvariable=email_tone, state="readonly")
+tone_dropdown['values'] = ["Formal", "Semi-Formal", "Casual", "Casual Human"]
 tone_dropdown.pack(pady=5)
 
 # Supplier Name Entry
