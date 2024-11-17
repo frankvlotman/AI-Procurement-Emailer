@@ -6,7 +6,7 @@ Provides predefined email scenarios to streamline common procurement communicati
 
 Customizes email content based on supplier names, product descriptions, order details, and other key information.
 
-Offers options for different email tones, such as formal, semi-formal, or casual.
+Offers options for different email tones, such as formal, semi-formal, casual and human casual which is AI toned.
 
 Allows users to download generated emails as Word documents or send them directly via email.
 
